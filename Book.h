@@ -13,6 +13,7 @@ public:
 	void input(int currentId);
 	void ownerInput();
 	Date getDate() const;
+	std::string getTitle() const;
 	bool getBorrowed() const;
 	int getId() const;
 	void setBorrowed();

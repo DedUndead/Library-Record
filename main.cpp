@@ -6,6 +6,11 @@
 #include "Date.h"
 #include "Book.h"
 
+#define MAINOPTION_MIN 0
+#define MAINOPTION_MAX 10
+#define SORTOPTION_MIN 1
+#define SORTOPTION_MAX 2
+
 using namespace std;
 
 /* Library class provides function to work with its storage. 
@@ -18,17 +23,20 @@ public:
 	void addNewBook();
 	void printBookRecords();
 	void initialize();
+	void sortBy(int option);
 	bool borrowBook(); 
 	bool returnBook(); 
+	bool deleteBook();
 private:
-	vector<Book>::iterator checkStorage(bool& result, bool flag);
+	vector<Book>::iterator checkStorage(bool& result, int opt = 0);
 	vector<Book> storage;
 	int idCounter;
 };
 
-void readOption(int& option);
+void readOption(int& option, int min, int max);
 void printGreet();
 void printMenu();
+void printSortMenu();
 
 int main()
 {
@@ -39,7 +47,7 @@ int main()
 
 	// Main menu loop
 	printMenu();
-	readOption(option);
+	readOption(option, MAINOPTION_MIN, MAINOPTION_MAX);
 	while (option != 0) {
 		switch (option)
 		{
@@ -83,19 +91,39 @@ int main()
 			cin.ignore(80, '\n');
 
 			break;
+		/*case 8: // Sort menu option
+			printSortMenu();
+			readOption(option, SORTOPTION_MIN, SORTOPTION_MAX);
+			record.sortBy(option);
+			
+			cout << " \n Sorted successfully." << endl;
+
+			cout << " Press enter to proceed..";
+			cin.ignore(80, '\n');
+
+			break;*/
+		case 9:
+			if (record.deleteBook()) {
+				cout << "\n The book was deleted from the record." << endl;
+			}
+
+			cout << " Press enter to proceed..";
+			cin.ignore(80, '\n');
+
+			break;
 		}
 
 		printMenu();
-		readOption(option);
+		readOption(option, MAINOPTION_MIN, MAINOPTION_MAX);
 	}
 }
 
 /* Read menu option from the user */
-void readOption(int& option) 
+void readOption(int& option, int min, int max) 
 {
-	cout << " Please, choose an option (0 - 10): ";
-	while (!(cin >> option) || option < 0 || option > 10) {
-		cout << " Error. Please, specify the value in range (0 - 10): ";
+	cout << " Please, choose an option (" << min << " - " << max << "): ";
+	while (!(cin >> option) || option < min || option > max) {
+		cout << " Error. Please, specify the value in range (" << min << " - " << max << "): ";
 
 		// Clear the input buffer
 		cin.clear();
@@ -127,9 +155,15 @@ void printMenu()
 	cout << " 6) Return a book" << endl;
 	cout << " 7) Print a report" << endl;
 	cout << " 8) Sort by..." << endl;
-	cout << " 9) Delete the book from the record" << endl;
+	cout << " 9) Delete a book from the record" << endl;
 	cout << " 10) Extend the deadline for returning" << endl;
 	cout << " 0) Exit\n\n";
+}
+
+void printSortMenu()
+{
+	cout << "\n 1) Sort by ID (oldest to newest)" << endl;
+	cout << " 2) Sort by alphabetic order\n" << endl;
 }
 
 /* Library implementation */
@@ -171,8 +205,8 @@ Returns false if failed. */
 bool Library::borrowBook()
 {
 	bool result = true; // Bool to see the succeff of checkStorage private function
-	bool toBorrow = true; // Flag indicates if the book is to be borrowed
-	auto it = checkStorage(result, toBorrow);
+	int option = 1; // Specify option to search for avaliable book
+	auto it = checkStorage(result, option);
 
 	if (result) {
 		it->ownerInput();
@@ -187,13 +221,27 @@ Returns false if failed. */
 bool Library::returnBook()
 {
 	bool result = true; // Bool to see the succeff of checkStorage private function
-	bool toBorrow = false; // Flag indicates if the book is to be borrowed
-	auto it = checkStorage(result, toBorrow);
+	int option = -1; // Specify option to search for borrowed book
+	auto it = checkStorage(result, option);
 
 	if (result) {
 		it->setBorrowed();
 	}
 	
+	return result;
+}
+
+/* Delete a book by the id specified by user.
+Returns false if fails. */
+bool Library::deleteBook()
+{
+	bool result = true;
+	auto it = checkStorage(result); // No option specified. Search for any book.
+
+	if (result) {
+		storage.erase(it);
+	}
+
 	return result;
 }
 
@@ -203,11 +251,11 @@ void Library::initialize()
 {
 	int recondNumber;
 	
-	cout << " Initializing the storage..." << endl;
+	cout << "\n Initializing the storage..." << endl;
 	cout << " How many books would you like to add (max 10): ";
 	cin >> recondNumber;
 
-	cin.clear();
+	cin.clear(); // Clear the buffer
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 	// Reset the storage and id counter
@@ -221,16 +269,37 @@ void Library::initialize()
 	cout << "\n The library was initialized with new storage. " << endl;
 }
 
-/* Function returns an iterator to the object with ID, specified by user.
-* Flag is used to determine either the storage is checking avaliable or borrowed
-* books. Result identifies either the element was found or not */
-vector<Book>::iterator Library::checkStorage(bool& result, bool flag) 
+/*void Library::sortBy(int option)
+{
+	// Sort by ID
+	if (option == 1) {
+		sort(storage.begin(), storage.end(), [](Book first, Book second) -> bool {
+			return first.getId() > second.getId();
+			});
+	}
+
+	// Sort by alphabetic order
+	if (option == 2) {
+		sort(storage.begin(), storage.end(), [](Book first, Book second) -> bool {
+			return first.getTitle() < second.getTitle();
+			});
+	}
+}*/
+
+/* Function returns an   iterator to the object with ID, specified by user.
+Opt is used to determine what category is searched:
+0 - no category specified (default)
+1 - currently borrowed
+-1 - currently avaliable
+Result identifies either the element was found or not */
+vector<Book>::iterator Library::checkStorage(bool& result, int opt) 
 {
 	int id;
 	
+	// SHOULD IT BE MOVED TO  MAIN?
 	cout << " Enter the id of the book: ";
 	cin >> id;
-	cin.clear(); // Clean the buffer
+	cin.clear(); // Clear the buffer
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 	// Try to find the book with the id passed
@@ -240,19 +309,19 @@ vector<Book>::iterator Library::checkStorage(bool& result, bool flag)
 
 	// Check if book is in the storage
 	if (it == storage.end()) {
-		cout << " Error: No book found in the library." << endl;
+		cout << "\n Error: No book found in the library." << endl;
 		result = false;
 	}
 
 	// Check if the book is avaliable for borrowing
-	else if (it->getBorrowed() && flag == true) {
-		cout << " The book is not avaliable. It will be returned on: " << it->getDate() << endl;
+	else if (it->getBorrowed() && opt == 1) {
+		cout << "\n The book is not avaliable. It will be returned on: " << it->getDate() << endl;
 		result = false;
 	}
 
 	// Check if the book is avaliable for returning
-	else if (!it->getBorrowed() && flag == false) {
-		cout << " Error: The book is already in the storage." << endl;
+	else if (!it->getBorrowed() && opt == -1) {
+		cout << "\n Error: The book is already in the storage." << endl;
 		result = false;
 	}
 

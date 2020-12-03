@@ -81,6 +81,11 @@ void Book::setBorrowed()
 	borrowed = !borrowed;
 }
 
+string Book::getTitle() const
+{
+	return title;
+}
+
 /* Overload of << operator, mainly for printing the main book
 infrormation in the table of records. */
 std::ostream& operator<<(std::ostream& out, const Book& targetBook)
