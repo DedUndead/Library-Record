@@ -5,6 +5,8 @@ Metropolia University of Applied Sciences, C++ Programming in IoT devices projec
 The program provides functionality to create library records, including the titles, avaliability, current owner's names and return deadlines.
 User interact with the program using a simple menu. The details of interaction may be found in UserMannual.pdf.
 
+![](images/menu.PNG)
+
 ## File handling
 User is able to save and open previously saved files through the program's intefrace. However, if necessary, user may create a file for further reading himself.
 Each line of the file should be in the following format:
