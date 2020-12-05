@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <sstream>
 #include "Book.h"
 
 using namespace std;
@@ -15,7 +16,7 @@ Book::Book(string title0, int currentId, string owner0, string month, int day, b
 The information is asked part by part, therefore it is decided to use
 the separate function instead of overloading >> operator
 currentId: ID value of the book that is assigned automatically */
-void Book::input(int currentId)
+void Book::userInput(int currentId)
 {
 	string answer;
 
@@ -57,13 +58,13 @@ void Book::ownerInput()
 	cout << " Enter the owner's name: ";
 	getline(cin, owner);
 
-	cout << " Enter the deadline for returning (Day:Month): ";
+	cout << " Enter the deadline for returning (Day Month): ";
 	while (!(cin >> date)) {
 		// Clear the input buffer
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-		cout << " Enter the deadline for returning (Day:Month): ";
+		cout << " Enter the deadline for returning (Day Month): ";
 	}
 
 	cin.clear(); 
@@ -86,21 +87,83 @@ string Book::getTitle() const
 	return title;
 }
 
-/* Overload of << operator, mainly for printing the main book
-infrormation in the table of records. */
-std::ostream& operator<<(std::ostream& out, const Book& targetBook)
+/* Output alliged for the record table */
+void Book::outTable()
 {
-	out << " " << left << setw(33) << targetBook.title
-		<< right << setw(7) << targetBook.id;
+	ostringstream tableOut;
 
-	if (targetBook.borrowed == true) {
-		out << setw(5) << " " << left << setw(27) << targetBook.owner
-			<< right << setw(15) << targetBook.date;
+	tableOut << " " << left << setw(43) << title
+		<< right << setw(7) << id;
+
+	if (borrowed == true) {
+		tableOut << setw(5) << " " << left << setw(26) << owner
+			<< right << setw(27) << date;
 	}
 	else {
-		out << setw(5) << " " << left << setw(27) << "Book is avaliable"
-			<< right << setw(18) << "N/A";
+		tableOut << setw(5) << " " << left << setw(26) << "Book is avaliable"
+			<< right << setw(27) << "N/A";
+	}
+
+	cout << tableOut.str();
+}
+
+/* Overload of << operator.
+Used specifically for file writing */
+ostream& operator<<(ostream& out, const Book& targetBook)
+{
+	out << targetBook.id << ";" << targetBook.title << ";";
+	
+	// Set the appropriate flag for avaliability
+	if (targetBook.borrowed == true) {
+		out << "B;"; // B indicates "Borrowed"
+		out << targetBook.owner << ";" << targetBook.date;
+	}
+	else {
+		out << "A;"; // A indicates "Avaliable"
 	}
 
 	return out;
+}
+
+/* Overload of >> operator.
+Used specifically for file reading*/
+istream& operator>>(istream& in, Book& targetBook)
+{
+	// Read the first part of the input line
+	// Make sure reading was successful and ID is specified as a number
+	string tempId;
+	if (getline(in, tempId, ';') && getline(in, targetBook.title, ';') &&
+		!tempId.empty() && tempId.find_first_not_of("0123456789") == std::string::npos) {
+		targetBook.id = stoi(tempId);
+	}
+	else {
+		in.setstate(ios_base::failbit);
+	}
+
+	string flag = "NA"; // Set buffer for flag to a neutural value
+	
+	// Check if the correct flag is set in the line
+	getline(in, flag, ';');
+	
+	// If the book is borrowed, check for the correct owner information 
+	if (flag == "B") {
+		if (getline(in, targetBook.owner, ';') && in >> targetBook.date) {
+			targetBook.borrowed = true;
+		}
+		else {
+			in.setstate(ios_base::failbit);
+		}
+	}
+
+	// If the book is borrowed, indicate it
+	else if (flag == "A") {
+		targetBook.borrowed = false;
+	}
+
+	// Flag is incorrect
+	else {
+		in.setstate(ios_base::failbit);
+	}
+
+	return in;
 }

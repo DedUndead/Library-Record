@@ -6,11 +6,13 @@
 
 class Book {
 	friend std::ostream& operator<<(std::ostream& out, const Book& targetBook);
+	friend std::istream& operator>>(std::istream& in, Book& targetBook);
 public:
 	Book(std::string title0 = "Undef", int currentId = 0,
 		std::string owner0 = "Undef", std::string month = "Undef",
 		int day = 0, bool state = false);
-	void input(int currentId);
+	void userInput(int currentId);
+	void outTable();
 	void ownerInput();
 	Date getDate() const;
 	std::string getTitle() const;
