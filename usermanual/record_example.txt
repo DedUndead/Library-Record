@@ -1,0 +1,5 @@
+1;The Lord of the Rings;B;J.R.R. Tolkien;31 January
+2;The Song of the Fire and Ice;A;
+3;Some Title;B;John Brown; May (INCORRECT LINE WILL BE SKIPPED)
+4;C++ Project;B;Pavel Arefyev;13 December
+5;Hello World;A;
