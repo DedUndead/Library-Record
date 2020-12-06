@@ -157,7 +157,7 @@ bool Library::deleteBook()
 
 /* Clear previous records, initialize new storage.
 Reset the ID counter of the library. */
-void Library::initialize(int max)
+void Library::initialize(int max, size_t maxLength)
 {
 	int recondNumber;
 
@@ -180,14 +180,14 @@ void Library::initialize(int max)
 	idCounter = 0;
 
 	for (int i = 0; i < recondNumber; i++) {
-		addNewBook();
+		addNewBook(maxLength);
 	}
 
 	cout << "\n The library was initialized with new storage. " << endl;
 }
 
 /* Write the current storage to a file */
-void Library::fileSave(string filename)
+void Library::fileSave(const string& filename)
 {
 	ofstream outfile;
 	outfile.open(filename);
@@ -198,8 +198,9 @@ void Library::fileSave(string filename)
 }
 
 /* Upload storage from the file */
-bool Library::fileUpload(string filename)
+bool Library::fileUpload(const string& filename)
 {
+	int line = 1; // Line counter for error printing
 	ifstream inputfile(filename);
 	string buffer;
 
@@ -222,11 +223,17 @@ bool Library::fileUpload(string filename)
 			storage.push_back(newBook);
 		}
 
+		// Print the line number of incorrect data
+		else {
+			cout << " Error occured in line " << line << ". Check the data integrity." << endl;
+		}
+
 		// Update the idCounter for the current record
 		if (idCounter < newBook.getId()) {
 			idCounter = newBook.getId();
 		}
 
+		line++;
 	}
 
 	return true;
