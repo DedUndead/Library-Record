@@ -5,14 +5,14 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
-#include "Date.h"
-#include "Book.h"
-#include "Library.h"
+#include "headers/Date.h"
+#include "headers/Book.h"
+#include "headers/Library.h"
 
 #define MAINOPTION_MIN 0
 #define MAINOPTION_MAX 10
 #define SORTOPTION_MIN 1
-#define SORTOPTION_MAX 2
+#define SORTOPTION_MAX 3
 
 using namespace std;
 
@@ -20,12 +20,13 @@ void readOption(int& option, int min, int max);
 void printGreet();
 void printMenu();
 void printSortMenu();
+void pressEnter();
 
 int main()
 {
 	Library record;
 	string file;
-	int option = -1; // Define a neutural default value for user option
+	int option;
 
 	printGreet();
 
@@ -38,16 +39,14 @@ int main()
 		case 1: // Initialize new record and clear the current one
 			record.initialize();
 
-			cout << " Press enter to proceed..";
-			cin.ignore(80, '\n');
+			pressEnter();
 
 			break;
 		case 2: // Add new book to library
 			record.addNewBook();
 			cout << "\n The book was added to the record." << endl;
 
-			cout << " Press enter to proceed..";
-			cin.ignore(80, '\n');
+			pressEnter();
 
 			break;
 		case 3: // Borrow a book
@@ -55,8 +54,7 @@ int main()
 				cout << "\n The book was borrowed." << endl;
 			}
 
-			cout << " Press enter to proceed..";
-			cin.ignore(80, '\n');
+			pressEnter();
 
 			break;
 		case 4: // Return a book
@@ -64,8 +62,7 @@ int main()
 				cout << "\n The book was returned." << endl;
 			}
 
-			cout << " Press enter to proceed..";
-			cin.ignore(80, '\n');
+			pressEnter();
 
 			break;
 		case 5: // Delete the book from the record
@@ -73,15 +70,22 @@ int main()
 				cout << "\n The book was deleted from the record." << endl;
 			}
 
-			cout << " Press enter to proceed..";
-			cin.ignore(80, '\n');
+			pressEnter();
 
 			break;
 		case 7: // Print all the records
 			record.printBookRecords();
 
-			cout << "\n Press enter to proceed..";
-			cin.ignore(80, '\n');
+			pressEnter();
+
+			break;
+		case 8: // Sort menu option
+			printSortMenu();
+			readOption(option, SORTOPTION_MIN, SORTOPTION_MAX);
+			record.setSortOption(option);
+
+			cout << " \n Sort option changed successfully." << endl;
+			pressEnter();
 
 			break;
 		case 9: // Save current records to file
@@ -91,8 +95,7 @@ int main()
 			record.fileSave(file);
 
 			cout << " \n Writing successful." << endl;
-			cout << " Press enter to proceed..";
-			cin.ignore(80, '\n');
+			pressEnter();
 
 			break;
 		case 10: // Upload records from the file
@@ -102,21 +105,9 @@ int main()
 			if (record.fileUpload(file)) {
 				cout << " \n Reading successful. You can now work with new record." << endl;
 			}
-			cout << " Press enter to proceed..";
-			cin.ignore(80, '\n');
+			pressEnter();
 
 			break;
-		/*case 8: // Sort menu option
-			printSortMenu();
-			readOption(option, SORTOPTION_MIN, SORTOPTION_MAX);
-			record.sortBy(option);
-			
-			cout << " \n Sorted successfully." << endl;
-
-			cout << " Press enter to proceed..";
-			cin.ignore(80, '\n');
-
-			break;*/
 		}
 
 		printMenu();
@@ -162,7 +153,7 @@ void printMenu()
 	cout << " 6) Extend the deadline for returning" << endl;
 	cout << "\n RECORD INTERFACE/OUTPUT: " << endl;
 	cout << " 7) Print a report" << endl;
-	cout << " 8) Sort by..." << endl;
+	cout << " 8) Change output sort option" << endl;
 	cout << "\n SAVE TO/UPLOAD FROM THE FILE: " << endl;
 	cout << " 9) Save library records to a file" << endl;
 	cout << " 10) Upload records from the file" << endl;
@@ -171,6 +162,13 @@ void printMenu()
 
 void printSortMenu()
 {
-	cout << "\n 1) Sort by ID (oldest to newest)" << endl;
-	cout << " 2) Sort by alphabetic order\n" << endl;
+	cout << "\n 1) Sort by avaliablity" << endl;
+	cout << " 2) Sort by ID (oldest to newest)" << endl;
+	cout << " 3) Sort by alphabetic order\n" << endl;
+}
+
+void pressEnter()
+{
+	cout << " Press enter to proceed..";
+	cin.ignore(80, '\n');
 }

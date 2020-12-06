@@ -2,19 +2,47 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
-#include "Book.h"
+#include "headers/Book.h"
 
 using namespace std;
 
-/* Book implementation */
 // Constructor
 Book::Book(string title0, int currentId, string owner0, string month, int day, bool state) :
 	title(title0), id(currentId), owner(owner0),
 	date(month, day), borrowed(state) { }
 
+/* Getter function to obtain avaliability */
+bool Book::getBorrowed() const
+{
+	return borrowed;
+}
+
+/* Getter function to obtain id */
+int Book::getId() const
+{
+	return id;
+}
+
+/* Getter function to obtain date */
+Date Book::getDate() const
+{
+	return date;
+}
+
+/* Getter function to obtain title */
+string Book::getTitle() const
+{
+	return title;
+}
+
+/* Change the borrowed state */
+void Book::changeBorrowed()
+{
+	borrowed = !borrowed;
+}
+
 /* Function for user input of the book.
-The information is asked part by part, therefore it is decided to use
-the separate function instead of overloading >> operator
+The information is asked part by part
 currentId: ID value of the book that is assigned automatically */
 void Book::userInput(int currentId)
 {
@@ -39,18 +67,6 @@ void Book::userInput(int currentId)
 	id = currentId;
 }
 
-/* Getter to return avaliability */
-bool Book::getBorrowed() const
-{
-	return borrowed;
-}
-
-/* Getter to return id */
-int Book::getId() const
-{
-	return id;
-}
-
 /* Function with the interface for the user to
 specify the book ownership and return deadline */
 void Book::ownerInput()
@@ -69,22 +85,6 @@ void Book::ownerInput()
 
 	cin.clear(); 
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
-}
-
-/* Getter function to return date */
-Date Book::getDate() const
-{
-	return date;
-}
-
-void Book::setBorrowed()
-{
-	borrowed = !borrowed;
-}
-
-string Book::getTitle() const
-{
-	return title;
 }
 
 /* Output alliged for the record table */

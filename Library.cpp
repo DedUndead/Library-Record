@@ -5,23 +5,43 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include "Library.h"
+#include "headers/Library.h"
 
 using namespace std;
 
-/* Library implementation */
 // Constructor
-Library::Library(int curId) : storage(), idCounter(curId) { }
+Library::Library(int curId, int opt) : storage(), idCounter(curId), sortOption(opt) { }
+
+/* Changing sorting option for output */
+void Library::setSortOption(int option)
+{
+	sortOption = option;
+}
 
 /* Print the records of the library.
-The storage is sorted so that avaliable books come last
-Partitions are sorted in the way user specified earlier */
+The storage is sorted according to sortOption value */
 void Library::printBookRecords()
 {
-	// Sort the storage vector by avaliablity using partition algorithm
-	partition(storage.begin(), storage.end(), [](Book element) {
-		return element.getBorrowed();
+	// Sort the storage vector by avaliablity using partition algorithm by avaliability
+	if (sortOption == 1) {
+		partition(storage.begin(), storage.end(), [](Book element) {
+			return element.getBorrowed();
 		});
+	}
+
+	// Sort by title
+	else if (sortOption == 2) {
+		sort(storage.begin(), storage.end(), [](Book first, Book second) {
+			return first.getId() < second.getId();
+		});
+	}
+
+	// Sort by ID
+	else {
+		sort(storage.begin(), storage.end(), [](Book first, Book second) {
+			return first.getTitle() < second.getTitle();
+		});
+	}
 
 	// Print the header
 	cout << endl << " " << "Book Title" << setw(40) << "Book ID"
@@ -72,7 +92,7 @@ bool Library::borrowBook()
 	// Borrow is successful
 	else {
 		it->ownerInput();
-		it->setBorrowed();
+		it->changeBorrowed();
 		return true;
 	}
 }
@@ -104,7 +124,7 @@ bool Library::returnBook()
 
 	// Returning is successful
 	else {
-		it->setBorrowed();
+		it->changeBorrowed();
 		return true;
 	}
 }
@@ -203,30 +223,13 @@ bool Library::fileUpload(string filename)
 	return true;
 }
 
-/*void Library::sortBy(int option)
-{
-	// Sort by ID
-	if (option == 1) {
-		sort(storage.begin(), storage.end(), [](Book first, Book second) -> bool {
-			return first.getId() > second.getId();
-			});
-	}
-
-	// Sort by alphabetic order
-	if (option == 2) {
-		sort(storage.begin(), storage.end(), [](Book first, Book second) -> bool {
-			return first.getTitle() < second.getTitle();
-			});
-	}
-}*/
-
 /* Function returns an iterator to the object with ID, passed by a parameter. */
 vector<Book>::iterator Library::checkStorage(int id)
 {
 	// Try to find the book with the id passed
 	auto it = find_if(storage.begin(), storage.end(), [id](const Book element) {
-		return element.getId() == id;
-		});
+					return element.getId() == id;
+				});
 
 	return it;
 }

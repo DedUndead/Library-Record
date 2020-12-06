@@ -1,11 +1,10 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "Date.h"
+#include "headers/Date.h"
 
 using namespace std;
 
-/* Date implementation */
 // Constructor
 Date::Date(string month0, int day0) : month(month0), day(day0) { }
 
