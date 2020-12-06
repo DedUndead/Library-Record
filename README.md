@@ -2,18 +2,18 @@
 Metropolia University of Applied Sciences, C++ Programming in IoT devices project by Pavel Arefyev.
 
 ## Concept
-The program provides functionality to create library records, including the titles, avaliability, current owner's names and return deadlines.
+The program provides functionality to create library records, including the titles, availability, current owner's names and return deadlines.
 User interact with the program using a simple menu. The details of interaction may be found in UserManual.pdf.
 
 ![](images/menu.PNG)
 
 ## File handling
-User is able to save and open previously saved files through the program's intefrace. However, if necessary, user may create a file for further reading himself.
+User is able to save and open previously saved files through the program's interface. However, if necessary, user may create a file for further reading himself.
 Each line of the file should be in the following format:
 
 > ID;Title;FLAG;owner;Day Month
 
-FLAG indicates book's avaliability: A - avaliable, B - borrowed.
+FLAG indicates book's avaliability: A - available, B - borrowed.
 Examples of correct files:
 
 > 2131;The Lord of The Rings;A;
