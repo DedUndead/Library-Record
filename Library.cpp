@@ -22,7 +22,7 @@ void Library::setSortOption(int option)
 The storage is sorted according to sortOption value */
 void Library::printBookRecords()
 {
-	// Sort the storage vector by avaliablity using partition algorithm by avaliability
+	// Sort the storage vector by availability using partition algorithm 
 	if (sortOption == 1) {
 		partition(storage.begin(), storage.end(), [](Book element) {
 			return element.getBorrowed();
@@ -54,19 +54,21 @@ void Library::printBookRecords()
 }
 
 /* Add new book to the library storage.
-id: Automatically calculated value to be assigned to the book. */
-void Library::addNewBook()
+id: Automatically calculated value to be assigned to the book.
+maxLength limits the input length. 20 by default. */
+void Library::addNewBook(size_t maxLength)
 {
 	idCounter++; // Increment the book id value for further assignment
 	Book newBook;
-	newBook.userInput(idCounter);
+	newBook.userInput(idCounter, maxLength);
 
 	storage.push_back(newBook); // Book copitd to vector
 }
 
 /* Borrow the book and specify the new owner and return deadline.
-Returns false if failed. */
-bool Library::borrowBook()
+Returns false if failed.
+maxLength limits the input length. 20 by default. */
+bool Library::borrowBook(size_t maxLength)
 {
 	int id;
 
@@ -83,7 +85,7 @@ bool Library::borrowBook()
 		return false;
 	}
 
-	// Check if the book is avaliable for borrowing
+	// Check if the book is availalable for borrowing
 	else if (it->getBorrowed()) {
 		cout << "\n The book is not avaliable. It will be returned on: " << it->getDate() << endl;
 		return false;
@@ -91,7 +93,7 @@ bool Library::borrowBook()
 
 	// Borrow is successful
 	else {
-		it->ownerInput();
+		it->ownerInput(maxLength);
 		it->changeBorrowed();
 		return true;
 	}
@@ -155,15 +157,22 @@ bool Library::deleteBook()
 
 /* Clear previous records, initialize new storage.
 Reset the ID counter of the library. */
-void Library::initialize()
+void Library::initialize(int max)
 {
 	int recondNumber;
 
 	cout << "\n Initializing the storage..." << endl;
-	cout << " How many books would you like to add (max 10): ";
-	cin >> recondNumber;
+	cout << " How many books would you like to add (max " << max << "): ";
+	while (!(cin >> recondNumber) || recondNumber <= 0 || recondNumber > max) {
+		cout << " Error. Please, specify the value in range (0 - " << max << "): ";
 
-	cin.clear(); // Clear the buffer
+		// Clear the input buffer
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	// Clear the buffer
+	cin.clear();
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 	// Reset the storage and id counter

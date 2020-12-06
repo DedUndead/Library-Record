@@ -43,14 +43,19 @@ void Book::changeBorrowed()
 
 /* Function for user input of the book.
 The information is asked part by part
-currentId: ID value of the book that is assigned automatically */
-void Book::userInput(int currentId)
+currentId: ID value of the book that is assigned automatically 
+maxLength limits the input length. 20 by default. */
+void Book::userInput(int currentId, size_t maxLength)
 {
 	string answer;
 
 	cout << "\n Specify the title: ";
 	getline(cin, title);
-
+	while (title.length() > maxLength) {
+		cout << " Title is too long. Max " << maxLength <<" characters. Specify the title: ";
+		getline(cin, title);
+	}
+	
 	cout << " Is the book borrowed? (no/yes): ";
 	getline(cin, answer);
 	while (answer != "no" && answer != "yes") {
@@ -61,18 +66,23 @@ void Book::userInput(int currentId)
 	if (answer == "yes") {
 		borrowed = true;
 
-		ownerInput();
+		ownerInput(maxLength);
 	}
 
 	id = currentId;
 }
 
 /* Function with the interface for the user to
-specify the book ownership and return deadline */
-void Book::ownerInput()
+specify the book ownership and return deadline.
+maxLength limits the input length. 20 by default. */
+void Book::ownerInput(size_t maxLength)
 {
 	cout << " Enter the owner's name: ";
 	getline(cin, owner);
+	while (owner.length() > maxLength) {
+		cout << " Name is too long. Max " << maxLength << " characters. Specify the title: ";
+		getline(cin, owner);
+	}
 
 	cout << " Enter the deadline for returning (Day Month): ";
 	while (!(cin >> date)) {
@@ -96,12 +106,12 @@ void Book::outTable()
 		<< right << setw(7) << id;
 
 	if (borrowed == true) {
-		tableOut << setw(5) << " " << left << setw(26) << owner
-			<< right << setw(27) << date;
+		tableOut << setw(5) << " " << left << setw(38) << owner
+			<< right << setw(15) << date;
 	}
 	else {
-		tableOut << setw(5) << " " << left << setw(26) << "Book is avaliable"
-			<< right << setw(27) << "N/A";
+		tableOut << setw(5) << " " << left << setw(38) << "Book is avaliable"
+			<< right << setw(15) << "N/A";
 	}
 
 	cout << tableOut.str();
@@ -119,7 +129,7 @@ ostream& operator<<(ostream& out, const Book& targetBook)
 		out << targetBook.owner << ";" << targetBook.date;
 	}
 	else {
-		out << "A;"; // A indicates "Avaliable"
+		out << "A;"; // A indicates "Available"
 	}
 
 	return out;
@@ -155,7 +165,7 @@ istream& operator>>(istream& in, Book& targetBook)
 		}
 	}
 
-	// If the book is borrowed, indicate it
+	// If the book is available, indicate it
 	else if (flag == "A") {
 		targetBook.borrowed = false;
 	}
