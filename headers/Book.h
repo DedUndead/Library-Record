@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BOOK_H_INCLUDED
+#define BOOK_H_INCLUDED
 
 #include <iostream>
 #include <string>
@@ -29,3 +30,5 @@ private:
 	Date date;
 	bool borrowed;
 };
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATE_H_INCLUDED
+#define DATE_H_INCLUDED
 
 #include <iostream>
 #include <string>
@@ -12,3 +13,5 @@ private:
 	std::string month;
 	int day;
 };
+
+#endif

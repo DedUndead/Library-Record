@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBRARY_H_INCLUDED
+#define LIBRARY_H_INCLUDED
 
 #include <string>
 #include <vector>
@@ -18,15 +19,17 @@ public:
 	void setSortOption(int option);
 	void printBookRecords();
 	void addNewBook(size_t maxLength = 20);
-	void initialize(int max);
+	void initialize(int max, size_t maxLength = 20);
 	bool borrowBook(size_t maxLength = 20);
 	bool returnBook();
 	bool deleteBook();
-	void fileSave(std::string filename);
-	bool fileUpload(std::string filename);
+	void fileSave(const std::string& filename);
+	bool fileUpload(const std::string& filename);
 private:
 	std::vector<Book>::iterator checkStorage(int id);
 	std::vector<Book> storage;
 	int idCounter;
 	int sortOption;
 };
+
+#endif
