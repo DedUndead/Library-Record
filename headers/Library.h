@@ -17,9 +17,9 @@ public:
 	Library(int curId = 0, int opt = 1);
 	void setSortOption(int option);
 	void printBookRecords();
-	void addNewBook();
-	void initialize();
-	bool borrowBook();
+	void addNewBook(size_t maxLength = 20);
+	void initialize(int max);
+	bool borrowBook(size_t maxLength = 20);
 	bool returnBook();
 	bool deleteBook();
 	void fileSave(std::string filename);

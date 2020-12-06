@@ -19,9 +19,9 @@ public:
 	int getId() const;
 
 	void changeBorrowed();
-	void userInput(int currentId);
+	void userInput(int currentId, size_t maxLength = 20);
 	void outTable();
-	void ownerInput();
+	void ownerInput(size_t maxLength = 20);
 private:
 	std::string title;
 	int id;
