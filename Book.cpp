@@ -51,8 +51,8 @@ void Book::userInput(int currentId, size_t maxLength)
 
 	cout << "\n Specify the title: ";
 	getline(cin, title);
-	while (title.length() > maxLength) {
-		cout << " Title is too long. Max " << maxLength <<" characters. Specify the title: ";
+	while (title.length() > maxLength || title.empty()) {
+		cout << " Title is too long or empty. Max " << maxLength <<" characters. Specify the title: ";
 		getline(cin, title);
 	}
 	
@@ -79,8 +79,8 @@ void Book::ownerInput(size_t maxLength)
 {
 	cout << " Enter the owner's name: ";
 	getline(cin, owner);
-	while (owner.length() > maxLength) {
-		cout << " Name is too long. Max " << maxLength << " characters. Specify the title: ";
+	while (owner.length() > maxLength || owner.empty()) {
+		cout << " Name is too long or empty. Max " << maxLength << " characters. Specify the name: ";
 		getline(cin, owner);
 	}
 

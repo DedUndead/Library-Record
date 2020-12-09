@@ -109,9 +109,13 @@ int main()
 			cout << " \n Enter the file name: ";
 			getline(cin, file);
 
-			record.fileSave(file);
-
-			cout << " \n Writing successful." << endl;
+			if (!file.empty()) {
+				record.fileSave(file);
+				cout << " \n Writing successful." << endl;
+			}
+			else {
+				cout << " \n Error: File name not specified." << endl;
+			}
 			pressEnter();
 
 			break;
@@ -137,9 +141,15 @@ int main()
 	getline(cin, answer); // Simple getline is used in order to seedup the process. If the input is incorrect, proceed to exit.
 	if (answer == "yes") {
 		cout << "\n Enter the name of the file: ";
+
 		getline(cin, file);
-		record.fileUpload(file);
-		cout << "\n File saved successfully." << endl;
+		if (!file.empty()) {
+			record.fileUpload(file);
+			cout << "\n File saved successfully." << endl;
+		}
+		else {
+			cout << " \n Error: File name not specified." << endl;
+		}
 	}
 
 	cout << "\n Terminating program..." << endl;
